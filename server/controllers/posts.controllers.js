@@ -1,4 +1,7 @@
 import Post from "../models/Post.js";
+import {uploadImage,deleteImage} from '../libs/claudinary.js'
+import  fs from "fs-extra";//fs-extra se utiliza para el manejo de archivos en node,fileSistem , no ocupamos el tradicional fs xq no se puede trabajar de forma asincronica, por lo tanto debemos instalar fs-extra
+
 
 const getPosts = async (req, res) => {
     try {
@@ -13,13 +16,25 @@ const getPosts = async (req, res) => {
 }
 
 const createPosts = async (req, res) => {
-    const body = req.body
     try {
+        const body = req.body
+        let image;
+        if (req.files.image){
+            // console.log('If?🚗🚗🚗🚗🚗🚗');
+            const result = await uploadImage(req.files.image.tempFilePath)
+            console.log('paso el if',result);
+            image= {
+                url:result.secure_url,
+                public_id: result.public_id
+            }
+            await fs.remove(req.files.image.tempFilePath)// eiminamos la imagen ya que ahora se encuentra en claudinary, por lo tanto lo eliminamos de forma local
+        } 
 
-        const newPosts = new Post(body)
+        const newPosts = new Post({...body,image})
         const savePost = await newPosts.save()
         res.send(savePost)
     } catch (error) {
+        
         res.status(500).json({ message: error.message })
     }
 }
@@ -39,8 +54,13 @@ const deletePosts = async (req, res) => {
     const { id } = req.params
     try {
         const deletePost = await Post.findByIdAndDelete(id)
-        !deletePost ? res.sendStatus(404)
-                    : res.send('se elimino el Posts')
+        if (!deletePost) return res.sendStatus(404)
+        if(deletePost.image.public_id){
+
+            await deleteImage(deletePost.image.public_id)//borramaos de claudinari con una fincion creada por nosotros que se encuentra en libs/claudinary
+        }
+        return res.sendStatus(204)
+        
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
