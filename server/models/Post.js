@@ -12,6 +12,7 @@ const postSchema =  new mongoose.Schema({
         trim:true
     },
     image:{
+        required:false,
         url:String,
         public_id: String
     }

@@ -18,8 +18,9 @@ const getPosts = async (req, res) => {
 const createPosts = async (req, res) => {
     try {
         const body = req.body
-        let image;
-        if (req.files.image){
+        let image= null;
+        let newPosts;
+        if (req.files?.image){
             // console.log('If?🚗🚗🚗🚗🚗🚗');
             const result = await uploadImage(req.files.image.tempFilePath)
             console.log('paso el if',result);
@@ -27,10 +28,12 @@ const createPosts = async (req, res) => {
                 url:result.secure_url,
                 public_id: result.public_id
             }
+            newPosts = new Post({...body,image})
             await fs.remove(req.files.image.tempFilePath)// eiminamos la imagen ya que ahora se encuentra en claudinary, por lo tanto lo eliminamos de forma local
-        } 
-
-        const newPosts = new Post({...body,image})
+        } else{
+            console.log('sin IMG 🚟🚟🚟🚟🚟');
+            newPosts = new Post(body)
+        }
         const savePost = await newPosts.save()
         res.send(savePost)
     } catch (error) {

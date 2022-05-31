@@ -6,7 +6,7 @@ connectDB()
 
 
 
-app.listen(3000,(err)=>{
+app.listen(PORT,(err)=>{
     err ? console.log('🔥🔥 error en la conexion con el servido🔥🔥 ',err)
         : console.log(`🏁🏁 server corriendo en http://localhost:${PORT} 🏁🏁`)
 })
