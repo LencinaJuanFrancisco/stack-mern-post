@@ -12,9 +12,12 @@ function App() {
           <Routes>
             <Route path='/' element={<HomePage />} />
             <Route path='/new' element={<PostForm></PostForm>} />
+            <Route path='/posts/:id' element={<PostForm></PostForm>} />
             <Route path='*' element={<NotFound></NotFound>} />
           </Routes>
-          <Toaster></Toaster>
+          <Toaster
+
+          ></Toaster>
         </PostsProvider>
 
       </div>

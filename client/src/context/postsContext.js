@@ -1,5 +1,5 @@
 import { useState, createContext, useContext, useEffect } from "react";
-import { getPostsRequests, createPostRequest, deletePostRequest } from "../api/posts";
+import { getPostsRequests, createPostRequest, deletePostRequest, getOnePostRequest,updatePostRequest } from "../api/posts";
 const postContex = createContext();
 
 export const usePosts = () => {
@@ -25,7 +25,16 @@ export const PostsProvider = ({ children }) => {
     //buscamos el post para actualizar el estado 
     setPosts(posts.filter(post => post._id !== id))
   }
-
+const getPost = async (id)=>{
+  const res = await getOnePostRequest(id)
+  return res.data
+}
+const updatePost= async(id,post)=>{
+const res = await updatePostRequest(id,post)
+//para que se actualize el listado de los post en el home, debemos modificar el estado, al igual que cuando eliminamos o creamos
+setPosts(posts.map(post => post._id === id ? res.data : post))
+console.log(res);
+}
   return (
     <postContex.Provider
       value={{
@@ -33,7 +42,9 @@ export const PostsProvider = ({ children }) => {
         setPosts,
         getPosts,
         createPost,
-        deletePost
+        deletePost,
+        getPost,
+        updatePost
       }}
     >
       {children}
