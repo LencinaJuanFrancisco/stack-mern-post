@@ -14,8 +14,13 @@ export const PostsProvider = ({ children }) => {
     setPosts(res.data);
   };
   const createPost = async (post) => {
-    const res = await createPostRequest(post);
-    setPosts([...posts, res.data]);
+    try {
+      const res = await createPostRequest(post);
+      setPosts([...posts, res.data]);
+      
+    } catch (error) {
+      console.error(error)
+    }
   };
   useEffect(() => {
     getPosts();

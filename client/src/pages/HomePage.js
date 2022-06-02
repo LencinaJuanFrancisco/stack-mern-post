@@ -17,9 +17,12 @@ function HomePage() {
 
   return (
     <>
-      <h2 className="text-white">Home Pages</h2>
       <div className="text-white">
-        <Link to="/new"> Creat new Post</Link>
+        <header className="flex justify-between py-4">
+            <h2 className="text-white text-2xl font-bold">Home Pages ({posts.length})</h2>
+          <Link to="/new" className="px-3 py-2 bg-indigo-500 hover:bg-indigo-600"> Creat new Post</Link>
+
+        </header>
         <div className="grid grid-cols-3 gap-2">
           {posts.map((post) => (
             <PostCard post={post} key={post._id} />
